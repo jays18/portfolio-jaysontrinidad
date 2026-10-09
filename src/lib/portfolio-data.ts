@@ -1,11 +1,14 @@
 // Edit this file to customize all portfolio content.
 export const profile = {
-  name: "[YOUR NAME]",
-  initials: "YN",
-  title: "Computer Engineering Student | Full-Stack Developer",
-  email: "you@example.com",
-  github: "https://github.com/",
-  linkedin: "https://www.linkedin.com/",
+  name: "Jayson R. Trinidad",
+  initials: "JT",
+  title: "Full-Stack Developer | Computer Engineer",
+  email: "jaytrinidad60@gmail.com",
+  phone: "+63 9260625914",
+  phoneHref: "tel:+639260625914",
+  github: "https://github.com/sonsontrinidad18",
+  githubHandle: "sonsontrinidad18",
+  linkedin: "https://ph.linkedin.com/in/jayson-trinidad-001611235",
   resume: "#", // replace with a link to your resume PDF
   location: "Manila, Philippines",
 };
@@ -19,11 +22,11 @@ export const navLinks = [
 ];
 
 export const skillGroups = [
-  { name: "Frontend", items: ["React", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
+  { name: "Frontend", items: ["React", "Next.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
   { name: "Backend", items: ["Python", "Django", "Django REST Framework", "REST APIs", "JWT Authentication"] },
   { name: "Database", items: ["PostgreSQL", "Supabase"] },
-  { name: "Tools", items: ["Git", "GitHub", "VS Code", "Vercel"] },
-  { name: "Engineering / Other", items: ["IoT", "Embedded Systems", "Networking", "System Security"] },
+  { name: "Tools & Deployment", items: ["Git", "GitHub", "VS Code", "Vercel"] },
+  { name: "Engineering", items: ["Networking", "Cybersecurity", "IoT", "Embedded Systems", "System Troubleshooting"] },
 ];
 
 export type Project = {
@@ -41,55 +44,80 @@ export const projects: Project[] = [
     name: "AirAware",
     tagline: "IoT Air Quality Monitoring & Forecasting Network",
     description:
-      "An IoT-based indoor air quality monitoring system that tracks particulate matter, carbon monoxide, carbon dioxide, temperature, and humidity, with machine-learning air-quality forecasting.",
+      "An IoT-based indoor air quality monitoring system designed to collect and monitor air quality data and provide forecasting using machine learning.",
     tech: ["Raspberry Pi", "Python", "Flask", "Random Forest", "PMS7003", "MQ-7", "SCD41", "MCP3008", "Chart.js"],
-    features: ["Real-time multi-sensor readings", "ML-based air quality forecasting", "Live dashboard with charts"],
-    github: "https://github.com/",
+    features: [
+      "Real-time air quality monitoring",
+      "Sensor data collection",
+      "Local data storage",
+      "Web dashboard",
+      "Air quality visualization",
+      "Machine learning forecasting",
+    ],
+    github: "https://github.com/sonsontrinidad18",
   },
   {
-    name: "CLAROED",
-    tagline: "LMS with AI Grade Forecasting",
-    description:
-      "A learning management system for secondary education with student learning features, automated grading, academic monitoring, and machine-learning grade forecasting.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Django REST Framework", "PostgreSQL", "JWT", "Random Forest"],
-    features: ["Automated grading", "Academic progress monitoring", "Grade forecasting with Random Forest"],
-    github: "https://github.com/",
-    demo: "https://example.com/",
-  },
-  {
-    name: "Job Management App",
+    name: "Job Management Web App",
     tagline: "Full-Stack Operations Dashboard",
     description:
-      "A full-stack application to manage employees, jobs, priorities, statuses, and job progress through a centralized dashboard.",
-    tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Vercel"],
-    features: ["Employee & job assignment", "Priority and status tracking", "Centralized progress dashboard"],
-    github: "https://github.com/",
-    demo: "https://example.com/",
+      "A full-stack job management application designed to manage employees, jobs, priorities, statuses, and job progress through a centralized dashboard.",
+    tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Vercel", "Tailwind CSS"],
+    features: [
+      "Job management",
+      "Employee management",
+      "Status tracking",
+      "Priority management",
+      "Dashboard monitoring",
+      "Authentication",
+      "Supabase database integration",
+      "Responsive interface",
+    ],
+    github: "https://github.com/sonsontrinidad18",
   },
 ];
 
 export const experience = [
   {
-    role: "Product Marketing Engineer Intern",
-    org: "Dahua Technology Philippines",
-    period: "2026",
-    description:
-      "Supported product marketing and technical activities involving security and surveillance technology, including CCTV, intelligent security solutions, technical documentation, and system requirements.",
+    org: "JobsContaq Manpower Corp",
+    role: "IT Department – Web Developer Intern",
+    period: "April 2026 – June 2026",
+    bullets: [
+      "Developed a full-stack deployment monitoring system from scratch to track applicants, deployed employees, and processing status.",
+      "Developed application features using Next.js, React, TypeScript, Supabase, and Vercel.",
+      "Built and maintained a centralized database for employee and deployment information.",
+      "Tested application functionality and troubleshot issues during development.",
+      "Designed responsive user interfaces and monitored system performance.",
+      "Worked with users and team members to understand requirements and improve system workflows.",
+    ],
   },
   {
-    role: "Freelance / Personal Development Projects",
-    org: "Independent",
-    period: "Ongoing",
-    description:
-      "Designing and building software, full-stack web applications, backend systems, and IoT solutions — from requirements and architecture to deployment.",
+    org: "Quezon City Hall",
+    role: "ITDD – Cybersecurity Intern",
+    period: "January 2026 – March 2026",
+    bullets: [
+      "Assisted with the installation and deployment of security-related IT systems.",
+      "Supported Security Operations Center (SecOps) monitoring and helped observe system activity for potential technical issues.",
+      "Collaborated with IT team members to troubleshoot and investigate technical issues.",
+      "Assisted in improving operational workflows through automation and technical documentation.",
+      "Followed systematic troubleshooting procedures to identify and resolve issues.",
+    ],
   },
 ];
 
 export const education = {
   degree: "Bachelor of Science in Computer Engineering",
   school: "National University – Manila",
-  graduation: "Expected Graduation: 2027",
-  areas: ["Software Development", "Networking", "Cybersecurity", "Embedded Systems", "Database Systems", "IoT"],
+  graduation: "Graduated: September 2026",
+  areas: [
+    "Software Development",
+    "Web Development",
+    "Backend Development",
+    "Database Systems",
+    "Networking",
+    "Cybersecurity",
+    "Embedded Systems",
+    "IoT",
+  ],
 };
 
 export const process = [
