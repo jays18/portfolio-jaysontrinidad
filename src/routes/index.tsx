@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav, Hero, About, Skills, Projects, Experience, Approach, Contact, Footer } from "@/components/portfolio/sections";
 
-const title = "Portfolio — Computer Engineering Student & Full-Stack Developer";
+const title = "Jayson R. Trinidad — Full-Stack Developer | Computer Engineer";
 const description =
-  "Computer Engineering student and Full-Stack Developer from the Philippines building web apps, backend systems, and IoT solutions.";
+  "Jayson R. Trinidad — Full-Stack Developer and Computer Engineering graduate Developer from the Philippines building web apps, backend systems, and IoT solutions.";
 
 export const Route = createFileRoute("/")({
   head: () => ({

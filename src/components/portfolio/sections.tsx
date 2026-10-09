@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, CheckCircle2, GraduationCap, MapPin, Send } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, Phone, CheckCircle2, GraduationCap, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,13 @@ const socials = [
   { label: "GitHub", href: profile.github, Icon: GithubIcon },
   { label: "LinkedIn", href: profile.linkedin, Icon: LinkedinIcon },
   { label: "Email", href: `mailto:${profile.email}`, Icon: ({ className }: { className?: string }) => <Mail className={className} /> },
+];
+
+const contactItems = [
+  { label: "Email", value: profile.email, href: `mailto:${profile.email}`, Icon: ({ className }: { className?: string }) => <Mail className={className} />, external: false },
+  { label: "Phone", value: profile.phone, href: profile.phoneHref, Icon: ({ className }: { className?: string }) => <Phone className={className} />, external: false },
+  { label: "LinkedIn", value: profile.name, href: profile.linkedin, Icon: LinkedinIcon, external: true },
+  { label: "GitHub", value: profile.githubHandle, href: profile.github, Icon: GithubIcon, external: true },
 ];
 
 export function Nav() {
@@ -60,21 +67,24 @@ export function Hero() {
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-[1.3fr_1fr] md:px-8 md:py-32">
         <Reveal>
           <p className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Open to internships & junior roles
+            <span className="h-1.5 w-1.5 rounded-full bg-success" /> Open to junior roles only
           </p>
-          <h1 className="mt-6 text-4xl font-semibold leading-[1.05] md:text-6xl">
+          <p className="mt-6 font-display text-lg font-semibold">{profile.name}</p>
+          <p className="font-mono text-sm text-muted-foreground">{profile.title}</p>
+          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] md:text-6xl">
             Building Practical Software & Technology Solutions.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            I'm a Computer Engineering student and aspiring Full-Stack Developer focused on building responsive web applications, backend systems, and innovative technology solutions.
+            Computer Engineering graduate focused on building responsive web applications, backend systems, and practical technology solutions.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg"><a href="#projects">View My Projects <ArrowRight /></a></Button>
             <Button asChild size="lg" variant="outline"><a href="#contact">Contact Me</a></Button>
+            <Button asChild size="lg" variant="ghost"><a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a></Button>
           </div>
           <div className="mt-10 flex gap-2">
             {socials.map(({ label, href, Icon }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+              <a key={label} href={href} {...(href.startsWith("mailto") ? {} : { target: "_blank", rel: "noreferrer" })} aria-label={label}
                 className="flex h-10 w-10 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary">
                 <Icon className="h-4 w-4" />
               </a>
@@ -91,6 +101,7 @@ export function Hero() {
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-muted-foreground">
 {`const developer = {
+  `}<span className="text-foreground">name</span>{`: `}<span className="text-primary">"Jayson R. Trinidad"</span>{`,
   `}<span className="text-foreground">role</span>{`: `}<span className="text-primary">"Full-Stack Developer"</span>{`,
   `}<span className="text-foreground">based</span>{`: `}<span className="text-primary">"Philippines"</span>{`,
   `}<span className="text-foreground">stack</span>{`: [
@@ -98,6 +109,7 @@ export function Hero() {
     `}<span className="text-primary">"Django"</span>{`, `}<span className="text-primary">"PostgreSQL"</span>{`,
   ],
   `}<span className="text-foreground">alsoBuilds</span>{`: `}<span className="text-primary">"IoT systems"</span>{`,
+  `}<span className="text-foreground">status</span>{`: `}<span className="text-primary">"CpE graduate, 2026"</span>{`,
 };`}
             </pre>
           </div>
@@ -118,10 +130,10 @@ export function About() {
         </Reveal>
         <Reveal delay={100} className="space-y-5 text-lg text-muted-foreground">
           <p>
-            I'm a Computer Engineering student with hands-on experience in software development, backend engineering, web technologies, IoT, and technical systems.
+            I'm a Computer Engineering graduate and Full-Stack Developer focused on building practical web applications, backend systems, and technology solutions. I have experience working with modern frontend and backend technologies, databases, cybersecurity, networking, and IoT systems.
           </p>
           <p>
-            I enjoy taking ideas and real-world problems and turning them into functional, reliable software — from clean, responsive interfaces to well-structured APIs and databases, and the hardware that sometimes sits behind them.
+            I enjoy turning real-world requirements into functional, reliable, and user-friendly software.
           </p>
           <p className="flex items-center gap-2 text-base"><MapPin className="h-4 w-4 text-primary" /> {profile.location}</p>
         </Reveal>
@@ -152,10 +164,10 @@ export function Skills() {
 export function Projects() {
   return (
     <Section id="projects" eyebrow="Featured Projects" title="Selected work.">
-      <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-2">
         {projects.map((p, i) => (
           <Reveal key={p.name}>
-            <article className="group grid gap-8 rounded-2xl border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg md:grid-cols-[1fr_1.2fr] md:p-10">
+            <article className="group flex h-full flex-col gap-6 rounded-2xl border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg md:p-10">
               <div>
                 <span className="font-mono text-sm text-primary">0{i + 1}</span>
                 <h3 className="mt-2 text-2xl font-semibold md:text-3xl">{p.name}</h3>
@@ -173,7 +185,7 @@ export function Projects() {
               </div>
               <div>
                 <p className="text-muted-foreground">{p.description}</p>
-                <ul className="mt-5 space-y-2">
+                <ul className="mt-5 grid gap-2 sm:grid-cols-2">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{f}</li>
                   ))}
@@ -195,16 +207,22 @@ export function Projects() {
 
 export function Experience() {
   return (
-    <Section id="experience" eyebrow="Experience & Education" title="Where I've been learning." className="bg-surface">
+    <Section id="experience" eyebrow="Experience & Education" title="Real-world experience." className="bg-surface">
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <ol className="relative border-l pl-8">
           {experience.map((e, i) => (
-            <Reveal key={e.role} delay={i * 80} className="relative pb-10 last:pb-0">
+            <Reveal key={e.org} delay={i * 80} className="relative pb-10 last:pb-0">
               <span className="absolute -left-[37px] top-1.5 h-3 w-3 rounded-full border-2 border-primary bg-background" />
-              <p className="font-mono text-xs text-primary">{e.period}</p>
-              <h3 className="mt-1 text-xl font-semibold">{e.role}</h3>
-              <p className="text-sm text-muted-foreground">{e.org}</p>
-              <p className="mt-3 text-muted-foreground">{e.description}</p>
+              <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between md:gap-4">
+                <h3 className="text-xl font-semibold">{e.org}</h3>
+                <p className="shrink-0 font-mono text-xs text-primary">{e.period}</p>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{e.role}</p>
+              <ul className="mt-4 space-y-2">
+                {e.bullets.map((b) => (
+                  <li key={b} className="flex gap-2 text-sm text-muted-foreground"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />{b}</li>
+                ))}
+              </ul>
             </Reveal>
           ))}
         </ol>
@@ -278,9 +296,10 @@ export function Contact() {
               Have a project, opportunity, or idea you'd like to discuss? I'd love to hear from you.
             </p>
             <div className="mt-8 space-y-3">
-              {socials.map(({ label, href, Icon }) => (
-                <a key={label} href={href} target="_blank" rel="noreferrer" className="flex items-center gap-3 opacity-80 transition-opacity hover:opacity-100">
-                  <Icon className="h-4 w-4" /> {label === "Email" ? profile.email : label}
+              {contactItems.map(({ label, value, href, Icon, external }) => (
+                <a key={label} href={href} {...(external ? { target: "_blank", rel: "noreferrer" } : {})} className="flex items-center gap-3 opacity-80 transition-opacity hover:opacity-100">
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span><span className="block font-mono text-xs opacity-60">{label}</span>{value}</span>
                 </a>
               ))}
             </div>
@@ -300,9 +319,9 @@ export function Contact() {
                 <Textarea id="message" name="message" rows={5} placeholder="Tell me about your project or opportunity…" maxLength={2000} />
               </div>
               {status === "error" && <p className="text-sm text-destructive">{error}</p>}
-              {status === "sent" && <p className="text-sm text-primary">Thanks! Your message has been sent.</p>}
+              {status === "sent" && <p className="text-sm text-primary">Your email app should open with your message ready to send.</p>}
               <Button type="submit" className="w-full" disabled={status === "sending"}>
-                {status === "sending" ? "Sending…" : <>Send Message <Send /></>}
+                {status === "sending" ? "Opening…" : <>Send Message <Send /></>}
               </Button>
             </form>
           </Reveal>
@@ -318,11 +337,11 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between md:px-8">
         <div>
           <p className="font-display font-semibold">{profile.name}</p>
-          <p className="text-sm text-muted-foreground">Computer Engineering Student & Full-Stack Developer</p>
+          <p className="text-sm text-muted-foreground">{profile.title}</p>
         </div>
         <div className="flex gap-5 text-sm text-muted-foreground">
           {socials.map(({ label, href }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer" className="hover:text-foreground">{label}</a>
+            <a key={label} href={href} {...(href.startsWith("mailto") ? {} : { target: "_blank", rel: "noreferrer" })} className="hover:text-foreground">{label}</a>
           ))}
         </div>
         <p className="text-sm text-muted-foreground">© 2026 {profile.name}. All rights reserved.</p>
