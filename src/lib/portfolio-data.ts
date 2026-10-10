@@ -1,4 +1,5 @@
 // Edit this file to customize all portfolio content.
+import resumeAsset from "@/assets/resume.pdf.asset.json";
 export const profile = {
   name: "Jayson R. Trinidad",
   initials: "JT",
@@ -9,7 +10,7 @@ export const profile = {
   github: "https://github.com/sonsontrinidad18",
   githubHandle: "sonsontrinidad18",
   linkedin: "https://ph.linkedin.com/in/jayson-trinidad-001611235",
-  resume: "#", // replace with a link to your resume PDF
+  resume: resumeAsset.url,
   location: "Manila, Philippines",
 };
 
