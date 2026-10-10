@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Developer Portfolio" },
-      { name: "description", content: "Computer Engineering student and Full-Stack Developer portfolio." },
+      { name: "description", content: "Jayson R. Trinidad — Full-Stack Developer | Computer Engineer." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
