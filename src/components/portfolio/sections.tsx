@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { profile, navLinks, skillGroups, projects, experience, education, process } from "@/lib/portfolio-data";
 import { Reveal, Section, Tag, GithubIcon, LinkedinIcon } from "./ui";
+import profilePhoto from "@/assets/profile.jpg.asset.json";
 import { sendContactMessage } from "@/lib/contact";
 
 const socials = [
@@ -124,8 +125,8 @@ export function About() {
     <Section id="about" eyebrow="About" title="Turning real problems into working software.">
       <div className="grid gap-12 md:grid-cols-[280px_1fr]">
         <Reveal>
-          <div className="flex aspect-[4/5] items-center justify-center rounded-2xl border bg-accent">
-            <span className="font-display text-6xl font-semibold text-accent-foreground">{profile.initials}</span>
+          <div className="aspect-[4/5] overflow-hidden rounded-2xl border bg-accent">
+            <img src={profilePhoto.url} alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover" loading="lazy" />
           </div>
         </Reveal>
         <Reveal delay={100} className="space-y-5 text-lg text-muted-foreground">
