@@ -45,14 +45,13 @@ export const projects: Project[] = [
     name: "AirAware",
     tagline: "IoT Air Quality Monitoring & Forecasting Network",
     description:
-      "An IoT-based indoor air quality monitoring system designed to collect and monitor air quality data and provide forecasting using machine learning.",
+      "An indoor air quality monitoring system that collects environmental sensor data, visualizes conditions through a web dashboard, and generates forecasts using machine learning.",
     tech: ["Raspberry Pi", "Python", "Flask", "Random Forest", "PMS7003", "MQ-7", "SCD41", "MCP3008", "Chart.js"],
     features: [
-      "Real-time air quality monitoring",
       "Sensor data collection",
+      "Indoor air quality monitoring",
       "Local data storage",
-      "Web dashboard",
-      "Air quality visualization",
+      "Dashboard visualization",
       "Machine learning forecasting",
     ],
     github: "https://github.com/sonsontrinidad18",
@@ -61,23 +60,32 @@ export const projects: Project[] = [
     name: "Job Management Web App",
     tagline: "Full-Stack Operations Dashboard",
     description:
-      "A full-stack job management application designed to manage employees, jobs, priorities, statuses, and job progress through a centralized dashboard.",
+      "A web-based job management application for organizing jobs, employees, priorities, statuses, and progress through a centralized dashboard.",
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Vercel", "Tailwind CSS"],
     features: [
-      "Job management",
-      "Employee management",
-      "Status tracking",
-      "Priority management",
-      "Dashboard monitoring",
+      "Job and employee management",
+      "Status and priority tracking",
+      "Database integration",
       "Authentication",
-      "Supabase database integration",
-      "Responsive interface",
+      "Responsive dashboard",
     ],
     github: "https://github.com/sonsontrinidad18",
   },
 ];
 
 export const experience = [
+  {
+    org: "Quezon City Hall",
+    role: "ITDD – Cybersecurity Intern",
+    period: "January 2026 – March 2026",
+    bullets: [
+      "Assisted with the installation and deployment of security-related IT systems.",
+      "Supported Security Operations Center (SecOps) monitoring and helped observe system activity for potential technical issues.",
+      "Collaborated with IT team members to troubleshoot and investigate technical issues.",
+      "Assisted in improving operational workflows through automation and technical documentation.",
+      "Followed systematic troubleshooting procedures to identify and resolve issues.",
+    ],
+  },
   {
     org: "JobsContaq Manpower Corp",
     role: "IT Department – Web Developer Intern",
@@ -89,18 +97,6 @@ export const experience = [
       "Tested application functionality and troubleshot issues during development.",
       "Designed responsive user interfaces and monitored system performance.",
       "Worked with users and team members to understand requirements and improve system workflows.",
-    ],
-  },
-  {
-    org: "Quezon City Hall",
-    role: "ITDD – Cybersecurity Intern",
-    period: "January 2026 – March 2026",
-    bullets: [
-      "Assisted with the installation and deployment of security-related IT systems.",
-      "Supported Security Operations Center (SecOps) monitoring and helped observe system activity for potential technical issues.",
-      "Collaborated with IT team members to troubleshoot and investigate technical issues.",
-      "Assisted in improving operational workflows through automation and technical documentation.",
-      "Followed systematic troubleshooting procedures to identify and resolve issues.",
     ],
   },
 ];
