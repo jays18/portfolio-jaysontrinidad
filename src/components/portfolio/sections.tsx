@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, Phone, CheckCircle2, GraduationCap, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { profile, navLinks, skillGroups, projects, experience, education, process } from "@/lib/portfolio-data";
+import { profile, navLinks, skillGroups, projects, experience, education } from "@/lib/portfolio-data";
 import { Reveal, Section, Tag, GithubIcon, LinkedinIcon } from "./ui";
 import profilePhoto from "@/assets/profile.jpg.asset.json";
 import { sendContactMessage } from "@/lib/contact";
@@ -21,37 +21,61 @@ const contactItems = [
   { label: "GitHub", value: profile.githubHandle, href: profile.github, Icon: GithubIcon, external: true },
 ];
 
+export function Intro() {
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    if (sessionStorage.getItem("intro-seen")) { setShow(false); return; }
+    sessionStorage.setItem("intro-seen", "1");
+    const t = setTimeout(() => setShow(false), 1600);
+    return () => clearTimeout(t);
+  }, []);
+  if (!show) return null;
+  return (
+    <div aria-hidden className="intro-overlay pointer-events-none fixed inset-0 z-[100] flex flex-col items-center justify-center gap-3 bg-background px-5 text-center">
+      <span className="overflow-hidden"><span className="intro-line block font-mono text-xs tracking-[0.35em] text-muted-foreground md:text-sm">JAYSON R. TRINIDAD</span></span>
+      <span className="overflow-hidden"><span className="intro-line block text-3xl font-semibold tracking-tight md:text-6xl" style={{ animationDelay: "250ms" }}>BUILDING DIGITAL <span className="text-primary">EXPERIENCES.</span></span></span>
+    </div>
+  );
+}
+
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
+    <header className={`sticky top-0 z-50 border-b transition-colors duration-300 ${scrolled || open ? "border-border bg-background/85 backdrop-blur-md" : "border-transparent"}`}>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
-        <a href="#top" className="font-display text-lg font-semibold">
+        <a href="#top" className="font-display text-base font-semibold tracking-tight">
           {profile.name}<span className="text-primary">.</span>
         </a>
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((l) => (
-            <a key={l.id} href={`#${l.id}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <a key={l.id} href={`#${l.id}`} className="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">
               {l.label}
             </a>
           ))}
-          <Button asChild size="sm" variant="outline">
-            <a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a>
+          <Button asChild size="sm" variant="outline" className="rounded-full">
+            <a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> Resume</a>
           </Button>
         </div>
-        <button className="md:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>
+        <button className="md:hidden" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </nav>
       {open && (
-        <div className="border-t bg-background px-5 py-4 md:hidden">
+        <div id="mobile-menu" className="border-t px-5 py-4 md:hidden">
           <div className="flex flex-col gap-1">
             {navLinks.map((l) => (
-              <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-md px-2 py-2.5 text-sm hover:bg-muted">
+              <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-lg hover:bg-muted">
                 {l.label}
               </a>
             ))}
-            <Button asChild size="sm" className="mt-2">
+            <Button asChild size="sm" className="mt-2 rounded-full">
               <a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a>
             </Button>
           </div>
@@ -62,82 +86,95 @@ export function Nav() {
 }
 
 export function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  function onMove(e: MouseEvent<HTMLElement>) {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }
   return (
-    <section id="top" className="relative overflow-hidden">
+    <section id="top" ref={ref} onMouseMove={onMove} className="relative -mt-16 flex min-h-[100svh] items-center overflow-hidden pt-16">
       <div className="grid-bg pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-[1.3fr_1fr] md:px-8 md:py-32">
+      <div
+        className="pointer-events-none absolute inset-0 hidden md:block"
+        style={{ background: "radial-gradient(420px circle at var(--mx, 70%) var(--my, 40%), color-mix(in oklab, var(--primary) 7%, transparent), transparent 70%)" }}
+      />
+      <div className="relative mx-auto w-full max-w-6xl px-5 py-24 md:px-8">
         <Reveal>
-          <p className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" /> Open to junior roles only
+          <p className="inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs text-muted-foreground">
+            <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-primary" /> Open to junior roles only
           </p>
-          <p className="mt-6 font-display text-lg font-semibold">{profile.name}</p>
-          <p className="font-mono text-sm text-muted-foreground">{profile.title}</p>
-          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] md:text-6xl">
-            Building Practical Software & Technology Solutions.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Computer Engineering graduate focused on building responsive web applications, backend systems, and practical technology solutions.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg"><a href="#projects">View My Projects <ArrowRight /></a></Button>
-            <Button asChild size="lg" variant="outline"><a href="#contact">Contact Me</a></Button>
-            <Button asChild size="lg" variant="ghost"><a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a></Button>
+          <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <p className="text-lg font-semibold">{profile.name}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">{profile.title}</p>
           </div>
-          <div className="mt-10 flex gap-2">
-            {socials.map(({ label, href, Icon }) => (
-              <a key={label} href={href} {...(href.startsWith("mailto") ? {} : { target: "_blank", rel: "noreferrer" })} aria-label={label}
-                className="flex h-10 w-10 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary">
+        </Reveal>
+        <Reveal delay={120}>
+          <h1 className="mt-6 max-w-5xl text-[2.6rem] font-semibold leading-[0.98] sm:text-6xl md:text-[5.5rem]">
+            I turn ideas into functional <span className="text-primary">digital experiences.</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={240}>
+          <p className="mt-8 max-w-xl text-lg text-muted-foreground">
+            Computer Engineering graduate focused on building thoughtful web applications, backend systems, and practical technology solutions.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <Button asChild size="lg" className="rounded-full"><a href="#projects">Explore My Work <ArrowRight /></a></Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full"><a href="#contact">Let's Connect</a></Button>
+            <Button asChild size="lg" variant="ghost" className="rounded-full"><a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a></Button>
+            <span className="mx-2 hidden h-6 w-px bg-border sm:block" />
+            {socials.filter((s) => s.label !== "Email").map(({ label, href, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                className="flex h-11 w-11 items-center justify-center rounded-full border text-muted-foreground transition-colors hover:border-primary hover:text-primary">
                 <Icon className="h-4 w-4" />
               </a>
             ))}
           </div>
         </Reveal>
-        <Reveal delay={150} className="hidden md:block">
-          <div className="rounded-xl border bg-card shadow-sm">
-            <div className="flex items-center gap-1.5 border-b px-4 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-border" />
-              <span className="h-2.5 w-2.5 rounded-full bg-border" />
-              <span className="h-2.5 w-2.5 rounded-full bg-border" />
-              <span className="ml-3 font-mono text-xs text-muted-foreground">developer.ts</span>
-            </div>
-            <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-muted-foreground">
-{`const developer = {
-  `}<span className="text-foreground">name</span>{`: `}<span className="text-primary">"Jayson R. Trinidad"</span>{`,
-  `}<span className="text-foreground">role</span>{`: `}<span className="text-primary">"Full-Stack Developer"</span>{`,
-  `}<span className="text-foreground">based</span>{`: `}<span className="text-primary">"Philippines"</span>{`,
-  `}<span className="text-foreground">stack</span>{`: [
-    `}<span className="text-primary">"React"</span>{`, `}<span className="text-primary">"TypeScript"</span>{`,
-    `}<span className="text-primary">"Django"</span>{`, `}<span className="text-primary">"PostgreSQL"</span>{`,
-  ],
-  `}<span className="text-foreground">alsoBuilds</span>{`: `}<span className="text-primary">"IoT systems"</span>{`,
-  `}<span className="text-foreground">status</span>{`: `}<span className="text-primary">"CpE graduate, 2026"</span>{`,
-};`}
-            </pre>
-          </div>
-        </Reveal>
       </div>
+      <a href="#about" aria-label="Scroll to About" className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">
+        Scroll
+        <span className="flex h-9 w-5 justify-center rounded-full border pt-2"><span className="scroll-dot h-1.5 w-1 rounded-full bg-primary" /></span>
+      </a>
     </section>
   );
 }
 
 export function About() {
   return (
-    <Section id="about" eyebrow="About" title="Turning real problems into working software.">
-      <div className="grid gap-12 md:grid-cols-[280px_1fr]">
+    <Section id="about" eyebrow="01 / About" title="A little about how I build.">
+      <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:gap-20">
         <Reveal>
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl border bg-accent">
-            <img src={profilePhoto.url} alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover" loading="lazy" />
+          <div className="relative">
+            <div className="aspect-[4/5] overflow-hidden rounded-2xl border bg-card">
+              <img src={profilePhoto.url} alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover grayscale transition-all duration-700 hover:grayscale-0" loading="lazy" />
+            </div>
+            <div className="mt-4 flex items-center justify-between font-mono text-xs text-muted-foreground">
+              <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-primary" /> {profile.location}</span>
+              <span>CpE / 2026</span>
+            </div>
           </div>
         </Reveal>
-        <Reveal delay={100} className="space-y-5 text-lg text-muted-foreground">
-          <p>
-            I'm a Computer Engineering graduate and Full-Stack Developer focused on building practical web applications, backend systems, and technology solutions. I have experience working with modern frontend and backend technologies, databases, cybersecurity, networking, and IoT systems.
-          </p>
-          <p>
-            I enjoy turning real-world requirements into functional, reliable, and user-friendly software.
-          </p>
-          <p className="flex items-center gap-2 text-base"><MapPin className="h-4 w-4 text-primary" /> {profile.location}</p>
-        </Reveal>
+        <div className="space-y-6 text-xl leading-relaxed text-muted-foreground md:text-2xl">
+          <Reveal delay={100}>
+            <p><span className="text-foreground">I'm a Computer Engineering graduate who enjoys turning real-world requirements into practical software solutions.</span> My experience spans full-stack web development, backend systems, database integration, cybersecurity exposure, and IoT projects.</p>
+          </Reveal>
+          <Reveal delay={200}>
+            <p>I enjoy solving problems, learning new technologies, and building applications that are functional, reliable, and easy to use.</p>
+          </Reveal>
+          <Reveal delay={300}>
+            <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border bg-border text-base">
+              {[["Focus", "Full-Stack"], ["Also", "IoT & Security"], ["Status", "Graduate"]].map(([k, v]) => (
+                <div key={k} className="bg-background p-4">
+                  <dt className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{k}</dt>
+                  <dd className="mt-1 text-sm text-foreground md:text-base">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </div>
       </div>
     </Section>
   );
@@ -145,13 +182,14 @@ export function About() {
 
 export function Skills() {
   return (
-    <Section id="skills" eyebrow="Skills" title="Tools I work with." className="bg-surface">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Section id="skills" eyebrow="02 / Toolkit" title="Tools I use to bring ideas to life.">
+      <div className="border-t">
         {skillGroups.map((g, i) => (
           <Reveal key={g.name} delay={i * 60}>
-            <div className="h-full rounded-xl border bg-card p-6 transition-colors hover:border-primary/40">
-              <h3 className="text-base font-semibold">{g.name}</h3>
-              <div className="mt-4 flex flex-wrap gap-2">
+            <div className="group grid gap-4 border-b py-7 transition-colors md:grid-cols-[60px_240px_1fr] md:items-center">
+              <span className="font-mono text-xs text-muted-foreground transition-colors group-hover:text-primary">0{i + 1}</span>
+              <h3 className="text-xl font-semibold transition-transform duration-300 group-hover:translate-x-1">{g.name}</h3>
+              <div className="flex flex-wrap gap-2">
                 {g.items.map((s) => <Tag key={s}>{s}</Tag>)}
               </div>
             </div>
@@ -162,44 +200,83 @@ export function Skills() {
   );
 }
 
+function ProjectVisual({ index }: { index: number }) {
+  if (index === 0) {
+    const bars = [40, 55, 48, 70, 62, 80, 58, 45, 66, 74, 52, 60];
+    return (
+      <div className="flex h-full flex-col justify-between p-6">
+        <div className="flex justify-between font-mono text-[11px] text-muted-foreground">
+          <span>PM2.5 · CO · CO₂</span><span className="text-primary">forecast →</span>
+        </div>
+        <div className="flex h-32 items-end gap-1.5">
+          {bars.map((h, i) => (
+            <span key={i} className={`flex-1 rounded-sm transition-all duration-500 group-hover:opacity-100 ${i > 8 ? "border border-dashed border-primary/60" : "bg-foreground/15 group-hover:bg-foreground/25"}`} style={{ height: `${h}%` }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+  const cols = [["To do", 3], ["In progress", 2], ["Done", 4]] as const;
+  return (
+    <div className="grid h-full grid-cols-3 gap-3 p-6">
+      {cols.map(([c, n]) => (
+        <div key={c} className="space-y-2">
+          <p className="font-mono text-[11px] text-muted-foreground">{c}</p>
+          {Array.from({ length: n }).map((_, i) => (
+            <div key={i} className="space-y-1.5 rounded-md border bg-background/60 p-2 transition-colors group-hover:border-primary/30">
+              <span className="block h-1.5 w-3/4 rounded bg-foreground/20" />
+              <span className={`block h-1.5 w-1/3 rounded ${c === "Done" ? "bg-primary/70" : "bg-foreground/10"}`} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function Projects() {
   return (
-    <Section id="projects" eyebrow="Featured Projects" title="Selected work.">
-      <div className="grid gap-6 lg:grid-cols-2">
+    <Section id="projects" eyebrow="03 / Selected Work" title="Some things I've built.">
+      <div className="space-y-10 md:space-y-16">
         {projects.map((p, i) => (
-          <Reveal key={p.name}>
-            <article className="group flex h-full flex-col gap-6 rounded-2xl border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg md:p-10">
-              <div>
+          <Reveal key={p.name} delay={i * 120}>
+            <article className={`group grid gap-8 rounded-3xl border bg-card p-5 transition-colors duration-500 hover:border-primary/40 md:grid-cols-2 md:gap-12 md:p-8 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-background">
+                <div className="grid-bg absolute inset-0 opacity-60" />
+                <div className="relative h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                  <ProjectVisual index={i} />
+                </div>
+                <span className="absolute bottom-3 right-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Illustration</span>
+              </div>
+              <div className="flex flex-col justify-center">
                 <span className="font-mono text-sm text-primary">0{i + 1}</span>
-                <h3 className="mt-2 text-2xl font-semibold md:text-3xl">{p.name}</h3>
-                <p className="mt-1 text-muted-foreground">{p.tagline}</p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Button asChild variant="outline" size="sm">
+                <h3 className="mt-3 text-3xl font-semibold md:text-4xl">{p.name}</h3>
+                <p className="mt-1 font-mono text-xs uppercase tracking-wider text-muted-foreground">{p.tagline}</p>
+                <p className="mt-5 text-muted-foreground">{p.description}</p>
+                <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm"><span className="mt-2 h-px w-3 shrink-0 bg-primary" />{f}</li>
+                  ))}
+                </ul>
+                <div className="mt-6 flex flex-wrap gap-2">{p.tech.map((t) => <Tag key={t}>{t}</Tag>)}</div>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Button asChild variant="outline" size="sm" className="rounded-full">
                     <a href={p.github} target="_blank" rel="noreferrer"><GithubIcon /> GitHub</a>
                   </Button>
                   {p.demo && (
-                    <Button asChild size="sm">
+                    <Button asChild size="sm" className="rounded-full">
                       <a href={p.demo} target="_blank" rel="noreferrer">Live Demo <ArrowUpRight /></a>
                     </Button>
                   )}
                 </div>
               </div>
-              <div>
-                <p className="text-muted-foreground">{p.description}</p>
-                <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{f}</li>
-                  ))}
-                </ul>
-                <div className="mt-6 flex flex-wrap gap-2">{p.tech.map((t) => <Tag key={t}>{t}</Tag>)}</div>
-              </div>
             </article>
           </Reveal>
         ))}
       </div>
-      <div className="mt-10 text-center">
-        <Button asChild variant="ghost">
-          <a href={profile.github} target="_blank" rel="noreferrer">View All Projects <ArrowRight /></a>
+      <div className="mt-12 text-center">
+        <Button asChild variant="ghost" className="rounded-full">
+          <a href={profile.github} target="_blank" rel="noreferrer">More on GitHub <ArrowUpRight /></a>
         </Button>
       </div>
     </Section>
@@ -208,51 +285,40 @@ export function Projects() {
 
 export function Experience() {
   return (
-    <Section id="experience" eyebrow="Experience & Education" title="Real-world experience." className="bg-surface">
-      <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
-        <ol className="relative border-l pl-8">
-          {experience.map((e, i) => (
-            <Reveal key={e.org} delay={i * 80} className="relative pb-10 last:pb-0">
-              <span className="absolute -left-[37px] top-1.5 h-3 w-3 rounded-full border-2 border-primary bg-background" />
-              <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between md:gap-4">
-                <h3 className="text-xl font-semibold">{e.org}</h3>
-                <p className="shrink-0 font-mono text-xs text-primary">{e.period}</p>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{e.role}</p>
-              <ul className="mt-4 space-y-2">
-                {e.bullets.map((b) => (
-                  <li key={b} className="flex gap-2 text-sm text-muted-foreground"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />{b}</li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </ol>
-        <Reveal delay={120}>
-          <div className="rounded-2xl border bg-card p-6">
-            <GraduationCap className="h-6 w-6 text-primary" />
-            <h3 className="mt-4 text-lg font-semibold">{education.degree}</h3>
-            <p className="text-sm text-muted-foreground">{education.school}</p>
-            <p className="mt-1 font-mono text-xs text-primary">{education.graduation}</p>
-            <div className="mt-5 flex flex-wrap gap-2">{education.areas.map((a) => <Tag key={a}>{a}</Tag>)}</div>
-          </div>
-        </Reveal>
-      </div>
+    <Section id="experience" eyebrow="04 / Experience" title="Where I've contributed.">
+      <ol className="relative border-l md:ml-[180px]">
+        {experience.map((e, i) => (
+          <Reveal key={e.org} delay={i * 100} className="relative pb-14 pl-8 last:pb-0 md:pl-12">
+            <span className="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background" />
+            <p className="font-mono text-xs uppercase tracking-wider text-primary md:absolute md:-left-[180px] md:top-1.5 md:w-[150px] md:text-right md:text-muted-foreground">{e.period}</p>
+            <h3 className="mt-2 text-2xl font-semibold md:mt-0">{e.org}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{e.role}</p>
+            <ul className="mt-5 max-w-2xl space-y-2.5">
+              {e.bullets.map((b) => (
+                <li key={b} className="flex gap-3 text-sm leading-relaxed text-muted-foreground"><span className="mt-2.5 h-px w-3 shrink-0 bg-primary/70" />{b}</li>
+              ))}
+            </ul>
+          </Reveal>
+        ))}
+      </ol>
     </Section>
   );
 }
 
-export function Approach() {
+export function Education() {
   return (
-    <Section id="approach" eyebrow="Process" title="How I Build">
-      <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
-        {process.map((s, i) => (
-          <Reveal key={s.n} delay={i * 70} className="bg-card p-6">
-            <span className="font-mono text-sm text-primary">{s.n}</span>
-            <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
-          </Reveal>
-        ))}
-      </div>
+    <Section id="education" eyebrow="05 / Education" title="Where I learned the fundamentals.">
+      <Reveal>
+        <div className="grid gap-6 border-y py-10 md:grid-cols-[1fr_auto] md:items-end">
+          <div>
+            <GraduationCap className="h-6 w-6 text-primary" />
+            <h3 className="mt-4 text-2xl font-semibold md:text-4xl">{education.degree}</h3>
+            <p className="mt-2 text-muted-foreground">{education.school}</p>
+          </div>
+          <p className="font-mono text-sm text-primary">{education.graduation}</p>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-2">{education.areas.map((a) => <Tag key={a}>{a}</Tag>)}</div>
+      </Reveal>
     </Section>
   );
 }
