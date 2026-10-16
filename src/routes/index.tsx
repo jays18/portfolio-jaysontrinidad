@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Nav, Hero, About, Skills, Projects, Experience, Approach, Contact, Footer } from "@/components/portfolio/sections";
+import { Nav, Hero, About, Skills, Projects, Experience, Education, Contact, Intro, Footer } from "@/components/portfolio/sections";
 
 const title = "Jayson R. Trinidad — Full-Stack Developer | Computer Engineer";
 const description =
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen">
+      <Intro />
       <Nav />
       <main>
         <Hero />
@@ -29,7 +30,7 @@ function Index() {
         <Skills />
         <Projects />
         <Experience />
-        <Approach />
+        <Education />
         <Contact />
       </main>
       <Footer />

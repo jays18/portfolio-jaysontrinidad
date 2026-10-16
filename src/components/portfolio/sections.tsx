@@ -353,26 +353,35 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 md:py-28">
+    <section id="contact" className="border-t py-24 md:py-36">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
-        <div className="grid gap-12 rounded-3xl bg-ink p-8 text-ink-foreground md:grid-cols-2 md:p-14">
-          <Reveal>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Contact</p>
-            <h2 className="mt-3 text-4xl font-semibold md:text-5xl">Let's Build Something.</h2>
-            <p className="mt-5 max-w-md opacity-70">
-              Have a project, opportunity, or idea you'd like to discuss? I'd love to hear from you.
-            </p>
-            <div className="mt-8 space-y-3">
-              {contactItems.map(({ label, value, href, Icon, external }) => (
-                <a key={label} href={href} {...(external ? { target: "_blank", rel: "noreferrer" } : {})} className="flex items-center gap-3 opacity-80 transition-opacity hover:opacity-100">
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span><span className="block font-mono text-xs opacity-60">{label}</span>{value}</span>
+        <Reveal>
+          <div className="flex items-center gap-4">
+            <p className="shrink-0 font-mono text-xs uppercase tracking-[0.2em] text-primary">06 / Contact</p>
+            <span className="draw-line h-px flex-1 bg-border" />
+          </div>
+          <h2 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] md:text-7xl">
+            Have something in mind? <span className="text-primary">Let's build it.</span>
+          </h2>
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+            I'm open to junior-level opportunities and conversations about software development and technology.
+          </p>
+        </Reveal>
+        <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
+          <div className="border-t">
+            {contactItems.map(({ label, value, href, Icon, external }, i) => (
+              <Reveal key={label} delay={i * 80}>
+                <a href={href} {...(external ? { target: "_blank", rel: "noreferrer" } : {})} className="group flex items-center gap-4 border-b py-5 transition-colors hover:text-primary">
+                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                  <span className="w-20 shrink-0 font-mono text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
+                  <span className="min-w-0 flex-1 truncate">{value}</span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                 </a>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={100}>
-            <form onSubmit={onSubmit} noValidate className="space-y-4 rounded-2xl bg-card p-6 text-card-foreground">
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={150}>
+            <form onSubmit={onSubmit} noValidate className="space-y-4 rounded-2xl border bg-card p-6 md:p-8">
               <div className="space-y-1.5">
                 <label htmlFor="name" className="text-sm font-medium">Name</label>
                 <Input id="name" name="name" placeholder="Your name" maxLength={100} />
@@ -387,9 +396,10 @@ export function Contact() {
               </div>
               {status === "error" && <p className="text-sm text-destructive">{error}</p>}
               {status === "sent" && <p className="text-sm text-primary">Your email app should open with your message ready to send.</p>}
-              <Button type="submit" className="w-full" disabled={status === "sending"}>
+              <Button type="submit" className="w-full rounded-full" disabled={status === "sending"}>
                 {status === "sending" ? "Opening…" : <>Send Message <Send /></>}
               </Button>
+              <p className="text-center text-xs text-muted-foreground">Opens your email app with the message prefilled.</p>
             </form>
           </Reveal>
         </div>
@@ -402,16 +412,13 @@ export function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between md:px-8">
-        <div>
-          <p className="font-display font-semibold">{profile.name}</p>
-          <p className="text-sm text-muted-foreground">{profile.title}</p>
-        </div>
-        <div className="flex gap-5 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">Designed and built by <span className="text-foreground">{profile.name}</span>.</p>
+        <div className="flex gap-6 text-sm text-muted-foreground">
           {socials.map(({ label, href }) => (
-            <a key={label} href={href} {...(href.startsWith("mailto") ? {} : { target: "_blank", rel: "noreferrer" })} className="hover:text-foreground">{label}</a>
+            <a key={label} href={href} {...(href.startsWith("mailto") ? {} : { target: "_blank", rel: "noreferrer" })} className="nav-link hover:text-foreground">{label}</a>
           ))}
         </div>
-        <p className="text-sm text-muted-foreground">© 2026 {profile.name}. All rights reserved.</p>
+        <p className="font-mono text-xs text-muted-foreground">© 2026</p>
       </div>
     </footer>
   );
