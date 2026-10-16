@@ -26,13 +26,16 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
 
 export function Section({ id, eyebrow, title, children, className = "" }: { id: string; eyebrow: string; title: string; children: ReactNode; className?: string }) {
   return (
-    <section id={id} className={`py-20 md:py-28 ${className}`}>
+    <section id={id} className={`border-t py-24 md:py-36 ${className}`}>
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <Reveal>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
-          <h2 className="mt-3 text-3xl font-semibold md:text-4xl">{title}</h2>
+          <div className="flex items-center gap-4">
+            <p className="shrink-0 font-mono text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+            <span className="draw-line h-px flex-1 bg-border" />
+          </div>
+          <h2 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.02] md:text-6xl">{title}</h2>
         </Reveal>
-        <div className="mt-12">{children}</div>
+        <div className="mt-14 md:mt-20">{children}</div>
       </div>
     </section>
   );
@@ -40,7 +43,7 @@ export function Section({ id, eyebrow, title, children, className = "" }: { id: 
 
 export function Tag({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-md border bg-surface px-2.5 py-1 font-mono text-xs text-muted-foreground">
+    <span className="inline-flex items-center rounded-full border px-3 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground">
       {children}
     </span>
   );
