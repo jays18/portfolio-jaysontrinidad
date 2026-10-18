@@ -1,5 +1,7 @@
 // Edit this file to customize all portfolio content.
 import resumeAsset from "@/assets/resume.pdf.asset.json";
+import airawareAsset from "@/assets/airaware.png.asset.json";
+import jobscontaqAsset from "@/assets/jobscontaq.png.asset.json";
 export const profile = {
   name: "Jayson R. Trinidad",
   initials: "JT",
@@ -38,6 +40,7 @@ export type Project = {
   features: string[];
   github: string;
   demo?: string;
+  image: string;
 };
 
 export const projects: Project[] = [
@@ -54,7 +57,8 @@ export const projects: Project[] = [
       "Dashboard visualization",
       "Machine learning forecasting",
     ],
-    github: "https://github.com/sonsontrinidad18",
+    github: "https://github.com/sonsontrinidad18/AirAware/tree/main/AIRAWAREFINAL",
+    image: airawareAsset.url,
   },
   {
     name: "Job Management Web App",
@@ -69,7 +73,8 @@ export const projects: Project[] = [
       "Authentication",
       "Responsive dashboard",
     ],
-    github: "https://github.com/sonsontrinidad18",
+    github: "https://github.com/sonsontrinidad18/jobscontaq-system",
+    image: jobscontaqAsset.url,
   },
 ];
 
