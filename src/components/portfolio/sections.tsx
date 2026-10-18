@@ -200,38 +200,8 @@ export function Skills() {
   );
 }
 
-function ProjectVisual({ index }: { index: number }) {
-  if (index === 0) {
-    const bars = [40, 55, 48, 70, 62, 80, 58, 45, 66, 74, 52, 60];
-    return (
-      <div className="flex h-full flex-col justify-between p-6">
-        <div className="flex justify-between font-mono text-[11px] text-muted-foreground">
-          <span>PM2.5 · CO · CO₂</span><span className="text-primary">forecast →</span>
-        </div>
-        <div className="flex h-32 items-end gap-1.5">
-          {bars.map((h, i) => (
-            <span key={i} className={`flex-1 rounded-sm transition-all duration-500 group-hover:opacity-100 ${i > 8 ? "border border-dashed border-primary/60" : "bg-foreground/15 group-hover:bg-foreground/25"}`} style={{ height: `${h}%` }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-  const cols = [["To do", 3], ["In progress", 2], ["Done", 4]] as const;
-  return (
-    <div className="grid h-full grid-cols-3 gap-3 p-6">
-      {cols.map(([c, n]) => (
-        <div key={c} className="space-y-2">
-          <p className="font-mono text-[11px] text-muted-foreground">{c}</p>
-          {Array.from({ length: n }).map((_, i) => (
-            <div key={i} className="space-y-1.5 rounded-md border bg-background/60 p-2 transition-colors group-hover:border-primary/30">
-              <span className="block h-1.5 w-3/4 rounded bg-foreground/20" />
-              <span className={`block h-1.5 w-1/3 rounded ${c === "Done" ? "bg-primary/70" : "bg-foreground/10"}`} />
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
+function ProjectVisual({ src, alt }: { src: string; alt: string }) {
+  return <img src={src} alt={alt} className="h-full w-full object-cover object-top" loading="lazy" />;
 }
 
 export function Projects() {
@@ -242,11 +212,9 @@ export function Projects() {
           <Reveal key={p.name} delay={i * 120}>
             <article className={`group grid gap-8 rounded-3xl border bg-card p-5 transition-colors duration-500 hover:border-primary/40 md:grid-cols-2 md:gap-12 md:p-8 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-background">
-                <div className="grid-bg absolute inset-0 opacity-60" />
                 <div className="relative h-full transition-transform duration-700 group-hover:scale-[1.04]">
-                  <ProjectVisual index={i} />
+                  <ProjectVisual src={p.image} alt={`${p.name} screenshot`} />
                 </div>
-                <span className="absolute bottom-3 right-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Illustration</span>
               </div>
               <div className="flex flex-col justify-center">
                 <span className="font-mono text-sm text-primary">0{i + 1}</span>
