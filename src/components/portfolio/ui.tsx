@@ -1,4 +1,55 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type PointerEvent } from "react";
+
+export function PointerSurface({ children, className = "", id, as: Element = "div", tilt = false }: { children: ReactNode; className?: string; id?: string; as?: "div" | "article" | "section"; tilt?: boolean }) {
+  const ref = useRef<HTMLElement | null>(null);
+  const frame = useRef<number | null>(null);
+  useEffect(() => () => { if (frame.current !== null) cancelAnimationFrame(frame.current); }, []);
+  function reset() {
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+    ref.current?.style.setProperty("--tilt-x", "0deg");
+    ref.current?.style.setProperty("--tilt-y", "0deg");
+    ref.current?.style.setProperty("--pointer-opacity", "0");
+  }
+  function move(e: PointerEvent<HTMLElement>) {
+    if (e.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+    const { clientX, clientY } = e;
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      el.style.setProperty("--pointer-x", `${x}px`);
+      el.style.setProperty("--pointer-y", `${y}px`);
+      el.style.setProperty("--pointer-opacity", "1");
+      if (tilt) {
+        el.style.setProperty("--tilt-x", `${(0.5 - y / rect.height) * 3}deg`);
+        el.style.setProperty("--tilt-y", `${(x / rect.width - 0.5) * 3}deg`);
+      }
+    });
+  }
+  return <Element ref={(el) => { ref.current = el; }} id={id} onPointerMove={move} onPointerLeave={reset} onPointerCancel={reset} className={`pointer-surface ${tilt ? "tilt-surface" : ""} ${className}`}>{children}</Element>;
+}
+
+const roles = ["Full-Stack Developer", "Web Developer", "Computer Engineer"];
+
+export function RotatingRole() {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const sync = () => {
+      clearInterval(timer);
+      if (motion.matches) { setActive(0); return; }
+      timer = setInterval(() => setActive((value) => (value + 1) % roles.length), 3200);
+    };
+    sync();
+    motion.addEventListener("change", sync);
+    return () => { clearInterval(timer); motion.removeEventListener("change", sync); };
+  }, []);
+  return <><span className="sr-only">{roles.join(", ")}</span><span aria-hidden className="role-rotation">{roles.map((role, i) => <span key={role} className={active === i ? "role-active" : ""}>{role}</span>)}</span></>;
+}
 
 export function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -12,7 +63,7 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
           io.disconnect();
         }
       },
-      { threshold: 0.12 },
+      { threshold: 0.08 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -43,7 +94,7 @@ export function Section({ id, eyebrow, title, children, className = "" }: { id: 
 
 export function Tag({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border px-3 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground">
+    <span className="technology-tag inline-flex items-center rounded-full border px-3 py-1 font-mono text-xs text-muted-foreground hover:border-primary/60 hover:text-foreground">
       {children}
     </span>
   );

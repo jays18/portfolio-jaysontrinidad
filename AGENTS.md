@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep lightweight motion primitives in the shared portfolio UI module and CSS; pointer effects use animation frames and fine-pointer/reduced-motion checks to avoid unnecessary dependencies and touch interference.
