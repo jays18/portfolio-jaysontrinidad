@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, ChevronDown, GraduationCap, MapPin, Send } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, Phone, ChevronDown, GraduationCap, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
