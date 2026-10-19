@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
-import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, Phone, CheckCircle2, GraduationCap, MapPin, Send } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { ArrowRight, ArrowUpRight, Mail, Menu, X, FileText, Phone, ChevronDown, GraduationCap, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { profile, navLinks, skillGroups, projects, experience, education } from "@/lib/portfolio-data";
-import { Reveal, Section, Tag, GithubIcon, LinkedinIcon } from "./ui";
+import { Reveal, Section, Tag, GithubIcon, LinkedinIcon, PointerSurface, RotatingRole } from "./ui";
 import profilePhoto from "@/assets/profile.jpg.asset.json";
 import { sendContactMessage } from "@/lib/contact";
 
@@ -41,12 +41,34 @@ export function Intro() {
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("");
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 24);
+    let frame = 0;
+    const update = () => {
+      setScrolled(window.scrollY > 24);
+      const position = Math.min(window.innerHeight * 0.35, 320);
+      let current = "";
+      for (const link of navLinks) {
+        const section = document.getElementById(link.id);
+        if (section && section.getBoundingClientRect().top <= position) current = link.id;
+      }
+      setActive(current);
+    };
+    const on = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
     on();
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    window.addEventListener("resize", on);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
   }, []);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: KeyboardEvent) => { if (e.key === "Escape") { setOpen(false); document.getElementById("menu-toggle")?.focus(); } };
+    const breakpoint = window.matchMedia("(min-width: 768px)");
+    const resize = () => { if (breakpoint.matches) setOpen(false); };
+    window.addEventListener("keydown", close);
+    breakpoint.addEventListener("change", resize);
+    return () => { window.removeEventListener("keydown", close); breakpoint.removeEventListener("change", resize); };
+  }, [open]);
   return (
     <header className={`sticky top-0 z-50 border-b transition-colors duration-300 ${scrolled || open ? "border-border bg-background/85 backdrop-blur-md" : "border-transparent"}`}>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
@@ -55,7 +77,7 @@ export function Nav() {
         </a>
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((l) => (
-            <a key={l.id} href={`#${l.id}`} className="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <a key={l.id} href={`#${l.id}`} aria-current={active === l.id ? "location" : undefined} className="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">
               {l.label}
             </a>
           ))}
@@ -63,44 +85,30 @@ export function Nav() {
             <a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> Resume</a>
           </Button>
         </div>
-        <button className="md:hidden" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)}>
+        <Button id="menu-toggle" variant="ghost" size="icon" className="md:hidden" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        </Button>
       </nav>
-      {open && (
-        <div id="mobile-menu" className="border-t px-5 py-4 md:hidden">
-          <div className="flex flex-col gap-1">
+        <div id="mobile-menu" inert={!open} aria-hidden={!open} className={`mobile-menu md:hidden ${open ? "menu-open" : ""}`}>
+          <div className="overflow-hidden"><div className="flex flex-col gap-1 border-t px-5 py-4">
             {navLinks.map((l) => (
-              <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-lg hover:bg-muted">
+              <a key={l.id} href={`#${l.id}`} aria-current={active === l.id ? "location" : undefined} onClick={() => setOpen(false)} className="mobile-nav-link rounded-md px-2 py-3 text-lg hover:bg-muted">
                 {l.label}
               </a>
             ))}
             <Button asChild size="sm" className="mt-2 rounded-full">
               <a href={profile.resume} target="_blank" rel="noreferrer"><FileText /> View Resume</a>
             </Button>
-          </div>
+          </div></div>
         </div>
-      )}
     </header>
   );
 }
 
 export function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  function onMove(e: MouseEvent<HTMLElement>) {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  }
   return (
-    <section id="top" ref={ref} onMouseMove={onMove} className="relative -mt-16 flex min-h-[100svh] items-center overflow-hidden pt-16">
+    <PointerSurface as="section" id="top" className="hero-surface relative -mt-16 flex min-h-[100svh] items-center overflow-hidden pt-16">
       <div className="grid-bg pointer-events-none absolute inset-0" />
-      <div
-        className="pointer-events-none absolute inset-0 hidden md:block"
-        style={{ background: "radial-gradient(420px circle at var(--mx, 70%) var(--my, 40%), color-mix(in oklab, var(--primary) 7%, transparent), transparent 70%)" }}
-      />
       <div className="relative mx-auto w-full max-w-6xl px-5 py-24 md:px-8">
         <Reveal>
           <p className="inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs text-muted-foreground">
@@ -108,12 +116,12 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <p className="text-lg font-semibold">{profile.name}</p>
-            <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">{profile.title}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground"><RotatingRole /></p>
           </div>
         </Reveal>
         <Reveal delay={120}>
-          <h1 className="mt-6 max-w-5xl text-[2.6rem] font-semibold leading-[0.98] sm:text-6xl md:text-[5.5rem]">
-            I turn ideas into functional <span className="text-primary">digital experiences.</span>
+          <h1 className="headline-reveal mt-6 max-w-5xl text-[2.6rem] font-semibold leading-[0.98] sm:text-6xl md:text-[5.5rem]">
+            {"I turn ideas into functional".split(" ").map((word, i) => <span key={word} className="headline-word"><span style={{ animationDelay: `${160 + i * 45}ms` }}>{word}</span>{" "}</span>)}<span className="headline-word text-primary"><span style={{ animationDelay: "385ms" }}>digital</span>{" "}</span><span className="headline-word text-primary"><span style={{ animationDelay: "430ms" }}>experiences.</span></span>
           </h1>
         </Reveal>
         <Reveal delay={240}>
@@ -138,7 +146,7 @@ export function Hero() {
         Scroll
         <span className="flex h-9 w-5 justify-center rounded-full border pt-2"><span className="scroll-dot h-1.5 w-1 rounded-full bg-primary" /></span>
       </a>
-    </section>
+    </PointerSurface>
   );
 }
 
@@ -210,9 +218,9 @@ export function Projects() {
       <div className="space-y-10 md:space-y-16">
         {projects.map((p, i) => (
           <Reveal key={p.name} delay={i * 120}>
-            <article className={`group grid gap-8 rounded-3xl border bg-card p-5 transition-colors duration-500 hover:border-primary/40 md:grid-cols-2 md:gap-12 md:p-8 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
+            <PointerSurface as="article" tilt className={`project-card group grid gap-8 rounded-3xl border bg-card p-5 hover:border-primary/40 md:grid-cols-2 md:gap-12 md:p-8 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-background">
-                <div className="relative h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                <div className="project-image relative h-full transition-transform duration-500 group-hover:scale-[1.04] group-focus-within:scale-[1.04]">
                   <ProjectVisual src={p.image} alt={`${p.name} screenshot`} />
                 </div>
               </div>
@@ -221,11 +229,14 @@ export function Projects() {
                 <h3 className="mt-3 text-3xl font-semibold md:text-4xl">{p.name}</h3>
                 <p className="mt-1 font-mono text-xs uppercase tracking-wider text-muted-foreground">{p.tagline}</p>
                 <p className="mt-5 text-muted-foreground">{p.description}</p>
-                <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+                <details className="project-details mt-6">
+                  <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm text-muted-foreground transition-colors hover:text-primary">Project details <ChevronDown className="h-4 w-4 transition-transform duration-300" /></summary>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm"><span className="mt-2 h-px w-3 shrink-0 bg-primary" />{f}</li>
                   ))}
                 </ul>
+                </details>
                 <div className="mt-6 flex flex-wrap gap-2">{p.tech.map((t) => <Tag key={t}>{t}</Tag>)}</div>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Button asChild variant="outline" size="sm" className="rounded-full">
@@ -238,7 +249,7 @@ export function Projects() {
                   )}
                 </div>
               </div>
-            </article>
+            </PointerSurface>
           </Reveal>
         ))}
       </div>
@@ -254,7 +265,7 @@ export function Projects() {
 export function Experience() {
   return (
     <Section id="experience" eyebrow="04 / Experience" title="Where I've contributed.">
-      <ol className="relative border-l md:ml-[180px]">
+      <ol className="experience-timeline relative border-l md:ml-[180px]">
         {experience.map((e, i) => (
           <Reveal key={e.org} delay={i * 100} className="relative pb-14 pl-8 last:pb-0 md:pl-12">
             <span className="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background" />
@@ -339,7 +350,7 @@ export function Contact() {
           <div className="border-t">
             {contactItems.map(({ label, value, href, Icon, external }, i) => (
               <Reveal key={label} delay={i * 80}>
-                <a href={href} {...(external ? { target: "_blank", rel: "noreferrer" } : {})} className="group flex items-center gap-4 border-b py-5 transition-colors hover:text-primary">
+                <a href={href} {...(external ? { target: "_blank", rel: "noreferrer" } : {})} className="contact-link group flex items-center gap-4 border-b py-5 transition-colors hover:text-primary">
                   <Icon className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
                   <span className="w-20 shrink-0 font-mono text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
                   <span className="min-w-0 flex-1 truncate">{value}</span>

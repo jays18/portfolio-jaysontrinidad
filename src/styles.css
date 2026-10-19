@@ -63,6 +63,8 @@
   --success: #b8f36b;
   --ink: #191b1d;
   --ink-foreground: #f4f1ea;
+  --pointer-glow: color-mix(in oklab, var(--primary) 7%, transparent);
+  --shadow-interactive: 0 16px 36px -24px color-mix(in oklab, var(--primary) 25%, transparent);
 }
 
 @layer base {
@@ -91,7 +93,7 @@
 @utility reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+   transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   &.is-visible { opacity: 1; transform: none; }
 }
 
@@ -130,7 +132,62 @@
 .scroll-dot { animation: scroll-dot 1.8s ease infinite; }
 .pulse-dot { animation: pulse-dot 2s ease infinite; }
 
+.pointer-surface { position: relative; }
+.pointer-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(420px circle at var(--pointer-x, 70%) var(--pointer-y, 40%), var(--pointer-glow), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.role-rotation { display: inline-grid; vertical-align: bottom; }
+.role-rotation > span { grid-area: 1 / 1; opacity: 0; transform: translateY(6px); transition: opacity 350ms ease, transform 350ms ease; }
+.role-rotation > .role-active { opacity: 1; transform: none; }
+.headline-word { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.headline-word:not(:last-child) { margin-right: 0.2em; }
+.headline-word > span { display: inline-block; animation: headline-in 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes headline-in { from { transform: translateY(105%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gentle-float { 50% { transform: translateY(-4px); } }
+.button-interaction { transition: transform 250ms ease, background-color 250ms ease, color 250ms ease, border-color 250ms ease, box-shadow 250ms ease; }
+.button-interaction:active { transform: scale(0.97); }
+.button-interaction svg { transition: transform 250ms ease; }
+.button-interaction:focus-visible svg { transform: translateX(2px); }
+.technology-tag { transition: transform 250ms ease, color 250ms ease, border-color 250ms ease, background-color 250ms ease; }
+.nav-link[aria-current="location"], .mobile-nav-link[aria-current="location"] { color: var(--primary); }
+.nav-link[aria-current="location"]::after { transform: scaleX(1); }
+.mobile-menu { display: grid; grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition: grid-template-rows 300ms ease, opacity 250ms ease, visibility 300ms; }
+.mobile-menu.menu-open { grid-template-rows: 1fr; opacity: 1; visibility: visible; }
+@media (min-width: 768px) { .mobile-menu { display: none; } }
+.project-card { transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease; }
+.project-card:focus-within { border-color: var(--primary); box-shadow: var(--shadow-interactive); }
+.project-details summary { list-style: none; }
+.project-details summary::-webkit-details-marker { display: none; }
+.project-details[open] summary svg { transform: rotate(180deg); }
+.project-details[open] ul { animation: detail-in 300ms ease both; }
+@keyframes detail-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+.experience-timeline > .reveal::before { content: ""; position: absolute; left: -1px; top: 0; width: 1px; height: 100%; background: var(--primary); transform: scaleY(0); transform-origin: top; transition: transform 600ms ease; }
+.experience-timeline > .is-visible::before { transform: scaleY(1); }
+.contact-link { transition: color 250ms ease, background-color 250ms ease; }
+.contact-link:focus-visible { color: var(--primary); }
+.contact-link:focus-visible > svg:last-child { opacity: 1; transform: none; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .pointer-surface::after { opacity: var(--pointer-opacity, 0); }
+  .tilt-surface { transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
+  .project-card:hover { box-shadow: var(--shadow-interactive); }
+  .button-interaction:hover { transform: translateY(-2px); }
+  .button-interaction:hover svg { transform: translateX(2px); }
+  .technology-tag:hover { transform: translateY(-2px); background: var(--accent); }
+  .hero-surface > a:last-child { animation: gentle-float 4s ease-in-out infinite; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .pointer-surface::after { display: none; }
+  .tilt-surface, .button-interaction:active, .project-image { transform: none !important; }
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .draw-line { transform: none; transition: none; }
