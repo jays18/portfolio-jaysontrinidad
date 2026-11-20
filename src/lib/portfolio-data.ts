@@ -12,7 +12,7 @@ export const profile = {
   github: "https://github.com/sonsontrinidad18",
   githubHandle: "sonsontrinidad18",
   linkedin: "https://ph.linkedin.com/in/jayson-trinidad-001611235",
-  resume: resumeAsset.url,
+  resume: "https://drive.google.com/file/d/1gvCmB9N7kV3e0lODL99R1rtMginQMOsb/view?usp=sharing",
   location: "Manila, Philippines",
 };
 
