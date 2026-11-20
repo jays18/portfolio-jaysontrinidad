@@ -157,7 +157,7 @@ export function About() {
         <Reveal>
           <div className="relative">
             <div className="aspect-[4/5] overflow-hidden rounded-2xl border bg-card">
-              <img src={profilePhoto.url} alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover grayscale transition-all duration-700 hover:grayscale-0" loading="lazy" />
+              <img src="/images/profile.jpg" alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover grayscale transition-all duration-700 hover:grayscale-0" loading="lazy" />
             </div>
             <div className="mt-4 flex items-center justify-between font-mono text-xs text-muted-foreground">
               <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-primary" /> {profile.location}</span>

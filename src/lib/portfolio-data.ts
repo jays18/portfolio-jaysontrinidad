@@ -58,7 +58,7 @@ export const projects: Project[] = [
       "Machine learning forecasting",
     ],
     github: "https://github.com/sonsontrinidad18/AirAware/tree/main/AIRAWAREFINAL",
-    image: airawareAsset.url,
+    image: "/images/airaware.png",
   },
   {
     name: "Job Management Web App",
@@ -74,7 +74,7 @@ export const projects: Project[] = [
       "Responsive dashboard",
     ],
     github: "https://github.com/sonsontrinidad18/jobscontaq-system",
-    image: jobscontaqAsset.url,
+    image: "/images/job-management.png",
   },
 ];
 
